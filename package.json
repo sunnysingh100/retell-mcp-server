@@ -1,0 +1,25 @@
+{
+  "name": "retell-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP Server for Retell AI - Manage agents, calls, phone numbers, LLMs, and knowledge bases",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node --esm src/index.ts",
+    "watch": "tsc --watch"
+  },
+  "keywords": ["mcp", "retell", "ai", "voice", "agents"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "retell-sdk": "^4.0.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.5",
+    "typescript": "^5.3.3"
+  }
+}
