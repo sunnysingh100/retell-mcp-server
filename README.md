@@ -1,164 +1,112 @@
-# Retell AI MCP Server
+# Retell AI - Model Context Protocol (MCP) Server
 
-A **Model Context Protocol (MCP) server** for the Retell AI platform. Enables AI assistants like Claude to manage AI voice agents, calls, phone numbers, LLMs, knowledge bases, and voices — directly via natural language.
+A fully-featured, official-grade Model Context Protocol (MCP) server that provides complete programmatic access to the **[Retell AI](https://retellai.com)** platform. 
 
-## Features
+This MCP server achieves **100% parity with the Retell Node.js SDK**, exposing 60 specific tools allowing LLM-powered assistants (like Claude Desktop, Cursor, and Codex) to autonomously build, configure, and operate end-to-end voice and text agents.
 
-**25 tools** covering the full Retell AI API surface:
+---
 
-| Category | Tools |
-|---|---|
-| 🤖 **Agents** | list, get, create, update, delete |
-| 📞 **Calls** | list, get, create phone call, create web call, delete |
-| ☎️ **Phone Numbers** | list, get, create (purchase), update, delete |
-| 🧠 **LLMs** | list, get, create, update, delete |
-| 📚 **Knowledge Bases** | list, get, create, delete |
-| 🎙️ **Voices** | list |
+## Capabilities
 
-## Prerequisites
+With this server, your AI assistant can autonomously:
+- **Design Agents:** Create and configure LLM response engines, Conversation Flows, and Chat Agents.
+- **Provide Memory:** Create Knowledge Bases, upload content, and link them to agents for RAG.
+- **Manage Telephony:** Purchase, import, and configure U.S. or international phone numbers.
+- **Trigger outbound calls & test:** Initiate Web calls, Phone calls, SMS chats, and batch tests.
+- **Monitor:** Retrieve transcripts, real-time metrics, live call concurrency, and latency scores.
 
+Everything available in the official SDK is available as an MCP Tool.
+
+---
+
+## Installation
+
+### Prerequisites
 - Node.js 18+
-- A [Retell AI account](https://dashboard.retellai.com) with an API key
+- A Retell AI API Key (from the [Retell Dashboard](https://beta.retellai.com/dashboard))
 
-## Setup
-
-### 1. Install dependencies & build
-
+### Setup
+Clone the repository and install dependencies:
 ```bash
+git clone https://github.com/your-repo/retell-mcp-server.git
 cd retell-mcp-server
 npm install
 npm run build
 ```
 
-### 2. Configure your API key
+---
 
-Copy `.env.example` to `.env` and add your Retell API key:
+## Configuration
 
-```bash
-cp .env.example .env
-```
+To use this with an MCP client (such as Claude Desktop or Codex), you must configure it via your client's settings.
 
-Then edit `.env`:
-```
-RETELL_API_KEY=key_xxxxxxxxxxxxxxxxxxxxxxxx
-```
-
-Get your API key from the [Retell AI Dashboard → API Keys](https://dashboard.retellai.com).
-
-### 3. Connect to an MCP client
-
-#### Claude Desktop
-
-Add this to your `claude_desktop_config.json` (usually at `%APPDATA%\Claude\claude_desktop_config.json` on Windows):
-
+### Claude Desktop
+Edit your `claude_desktop_config.json`:
 ```json
 {
   "mcpServers": {
     "retell-ai": {
       "command": "node",
-      "args": ["C:/Users/JULI/retell-mcp-server/dist/index.js"],
+      "args": [
+        "/absolute/path/to/retell-mcp-server/dist/index.js"
+      ],
       "env": {
-        "RETELL_API_KEY": "key_xxxxxxxxxxxxxxxxxxxxxxxx"
+        "RETELL_API_KEY": "your_retell_api_key_here"
       }
     }
   }
 }
 ```
 
-#### Codex / Other MCP clients
-
-Use the provided `mcp_config.json` as a reference. Update `RETELL_API_KEY` with your actual key.
-
-## Usage Examples
-
-Once connected, you can ask your AI assistant things like:
-
-- *"List all my Retell AI agents"*
-- *"Create a new LLM with a customer support prompt using gpt-4o-mini"*
-- *"Create a new voice agent named 'Support Bot' using the LLM I just created"*
-- *"Show me all calls from the last 24 hours"*
-- *"Make an outbound call from +14157774444 to +12137774445"*
-- *"Purchase a new phone number with area code 415 and bind it to agent abc123"*
-- *"Create a knowledge base with our FAQ text and attach it to the LLM"*
-- *"List all available voices"*
-- *"Delete the agent with ID oBeDLoLOeuAbiuaMFXRtDOLriTJ5tSxD"*
-
-## Tool Reference
-
-### Agents
-
-| Tool | Description |
-|---|---|
-| `retell_list_agents` | List all agents |
-| `retell_get_agent` | Get agent by ID |
-| `retell_create_agent` | Create agent (requires **voice_id** + **llm_id** or **llm_websocket_url**) |
-| `retell_update_agent` | Update agent settings |
-| `retell_delete_agent` | Delete an agent |
-
-### Calls
-
-| Tool | Description |
-|---|---|
-| `retell_list_calls` | List calls with optional filters |
-| `retell_get_call` | Get full call details (transcript, recording, etc.) |
-| `retell_create_phone_call` | Make outbound phone call |
-| `retell_create_web_call` | Create browser-based web call |
-| `retell_delete_call` | Delete a call record |
-
-### Phone Numbers
-
-| Tool | Description |
-|---|---|
-| `retell_list_phone_numbers` | List all phone numbers |
-| `retell_get_phone_number` | Get phone number details |
-| `retell_create_phone_number` | Purchase & configure a new number |
-| `retell_update_phone_number` | Update number agent bindings |
-| `retell_delete_phone_number` | Release a phone number |
-
-### LLMs
-
-| Tool | Description |
-|---|---|
-| `retell_list_llms` | List all LLM configurations |
-| `retell_get_llm` | Get LLM details |
-| `retell_create_llm` | Create LLM with prompt, model, and tools |
-| `retell_update_llm` | Update LLM settings |
-| `retell_delete_llm` | Delete an LLM |
-
-### Knowledge Bases
-
-| Tool | Description |
-|---|---|
-| `retell_list_knowledge_bases` | List all knowledge bases |
-| `retell_get_knowledge_base` | Get knowledge base details |
-| `retell_create_knowledge_base` | Create KB from text/URLs |
-| `retell_delete_knowledge_base` | Delete a knowledge base |
-
-### Voices
-
-| Tool | Description |
-|---|---|
-| `retell_list_voices` | List all available voices |
-
-## Development
-
+### Generic Client
+Just run the built script with the environment variable set. The server operates over `stdio` via the standard MCP JSON-RPC protocol.
 ```bash
-# Build TypeScript
-npm run build
-
-# Watch mode
-npm run watch
+RETELL_API_KEY="your_api_key" node dist/index.js
 ```
 
-## Project Structure
+---
 
-```
-retell-mcp-server/
-├── src/
-│   └── index.ts          # Main MCP server implementation
-├── dist/                 # Compiled JavaScript output
-├── package.json
-├── tsconfig.json
-├── mcp_config.json       # MCP client configuration reference
-└── .env.example          # Environment variable template
-```
+## Available Tools (60 Total)
+
+The server supports all 14 domain resources of the Retell SDK.
+
+### 🎙 Voices
+- `retell_list_voices`: List available voices across providers (ElevenLabs, OpenAI, Deepgram, etc).
+
+### 🧠 LLMs & Knowledge Bases
+- `retell_list_llms` / `retell_get_llm` / `retell_create_llm` / `retell_update_llm` / `retell_delete_llm`
+- `retell_list_knowledge_bases` / `retell_get_knowledge_base` / `retell_create_knowledge_base` / `retell_delete_knowledge_base`
+- `retell_add_knowledge_base_sources` / `retell_delete_knowledge_base_source`
+
+### 🤖 Voice Agents
+- `retell_list_agents` / `retell_get_agent` / `retell_create_agent` / `retell_update_agent` / `retell_delete_agent` 
+- `retell_get_agent_versions` / `retell_publish_agent`
+
+### 📱 Phone Numbers
+- `retell_list_phone_numbers` / `retell_get_phone_number` / `retell_create_phone_number`
+- `retell_update_phone_number` / `retell_delete_phone_number` / `retell_import_phone_number`
+
+### 📞 Voice Calls
+- `retell_list_calls` / `retell_get_call` / `retell_update_call` / `retell_delete_call`
+- **Initiate:** `retell_create_phone_call` / `retell_create_web_call` / `retell_register_phone_call`
+
+### 💬 Chat Agents & Sessions
+- **Agents:** `retell_list_chat_agents` / `retell_get_chat_agent` / `retell_create_chat_agent` / `retell_update_chat_agent` / `retell_delete_chat_agent` / `retell_get_chat_agent_versions` / `retell_publish_chat_agent`
+- **Sessions:** `retell_list_chats` / `retell_get_chat` / `retell_create_chat` / `retell_update_chat` / `retell_create_chat_completion` / `retell_create_sms_chat` / `retell_end_chat`
+
+### 🔀 Conversation Flows (Node-based scripting)
+- **Flows:** `retell_list_conversation_flows` / `retell_get_conversation_flow` / `retell_create_conversation_flow` / `retell_update_conversation_flow` / `retell_delete_conversation_flow`
+- **Components:** `list`, `get`, `create`, `update`, `delete` for reusable conversation flow components.
+
+### ⚙️ Utilities
+- `retell_create_batch_call` / `retell_create_batch_test`
+- `retell_get_concurrency`
+- `retell_get_mcp_tools`
+
+---
+
+## Architectural Notes
+
+- **Input Validation:** Every tool validates its inputs dynamically using strict `zod` schemas. Invalid arguments return clean, detailed error messages.
+- **Type Safety:** The entire codebase is thoroughly typed against the `retell-sdk`, eliminating `any` casting and masking TypeScript errors.
+- **Standard Protocol Compliance:** All expected errors generate an MCP protocol `isError: true` payload, ensuring the LLM client correctly handles API rejections without crashing.
