@@ -28,7 +28,7 @@ Everything available in the official SDK is available as an MCP Tool.
 ### Setup
 Clone the repository and install dependencies:
 ```bash
-git clone https://github.com/your-repo/retell-mcp-server.git
+git clone https://github.com/sunnysingh100/retell-mcp-server.git
 cd retell-mcp-server
 npm install
 npm run build
