@@ -64,7 +64,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       content: [{ type: "text", text: result }],
     };
   } catch (err) {
-    const error = err as Error & { status?: number; error?: unknown };
+    const error = normalizeError(err);
 
     // Provide user-friendly messages for Zod validation failures
     if (err instanceof ZodError) {
@@ -97,6 +97,41 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     };
   }
 });
+
+function normalizeError(err: unknown): {
+  message: string;
+  status?: number;
+  error?: unknown;
+} {
+  if (err instanceof Error) {
+    const detailedError = err as Error & { status?: number; error?: unknown };
+    return {
+      message: detailedError.message,
+      status: detailedError.status,
+      error: detailedError.error,
+    };
+  }
+
+  if (typeof err === "string") {
+    return { message: err };
+  }
+
+  if (typeof err === "object" && err !== null) {
+    const maybeError = err as { message?: unknown; status?: unknown; error?: unknown };
+    const message =
+      typeof maybeError.message === "string"
+        ? maybeError.message
+        : "An unknown error occurred while handling the tool request.";
+    const normalized: { message: string; status?: number; error?: unknown } = { message };
+
+    if (typeof maybeError.status === "number") normalized.status = maybeError.status;
+    if ("error" in maybeError) normalized.error = maybeError.error;
+
+    return normalized;
+  }
+
+  return { message: "An unknown error occurred while handling the tool request." };
+}
 
 // ─── Start ───────────────────────────────────────────────────────────────────
 
